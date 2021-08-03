@@ -1,11 +1,13 @@
 """A Markov chain generator that can tweet random messages."""
 
 import sys
+import discord
+import os
 from random import choice
 
 
 def open_and_read_file(filenames):
-    """Take list of files. Open them, read them, and return one long string."""
+    # """Take list of files. Open them, read them, and return one long string."""
 
     body = ''
     for filename in filenames:
@@ -17,7 +19,7 @@ def open_and_read_file(filenames):
 
 
 def make_chains(text_string):
-    """Take input text as string; return dictionary of Markov chains."""
+    # """Take input text as string; return dictionary of Markov chains."""
 
     chains = {}
 
@@ -35,7 +37,7 @@ def make_chains(text_string):
 
 
 def make_text(chains):
-    """Take dictionary of Markov chains; return random text."""
+    # """Take dictionary of Markov chains; return random text."""
 
     keys = list(chains.keys())
     key = choice(keys)
@@ -58,9 +60,40 @@ def make_text(chains):
 # Get the filenames from the user through a command line prompt, ex:
 # python markov.py green-eggs.txt shakespeare.txt
 filenames = sys.argv[1:]
-
 # Open the files and turn them into one long string
 text = open_and_read_file(filenames)
-
-# Get a Markov chain
 chains = make_chains(text)
+
+
+
+# client = discord.Client()
+
+# @client.event
+# async def on_ready():
+#     print('We have logged in as {0.user}'.format(client))
+
+# @client.event
+# async def on_message(message):
+#     if message.author == client.user:
+#         return
+
+#     if message.content.startswith('$hello'):
+#         await message.channel.send('Hello!')
+
+client = discord.Client()
+
+
+@client.event
+async def on_ready():
+    print(f'Successfully connected! Logged in as {client.user}.')
+
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return message.channel.send(chains)
+
+    # TODO: replace this with your code
+
+
+client.run(os.environ['DISCORD_TOKEN'])
